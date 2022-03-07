@@ -6,19 +6,7 @@ import { v4 as uuidv4 } from "uuid"
 router.post("/login", async (req, res) => {
   req.context.models.User.findOne({
     where: { email: req.body.email },
-    include: [
-      { all: true },
-      {
-        association: "chats",
-        include: [
-          {
-            association: "messages",
-            include: { association: "sender", attributes: ["username"] },
-          },
-          { association: "users" },
-        ],
-      },
-    ],
+    include: [{ all: true }],
   }).then((user) => {
     bcrypt.compare(req.body.password, user.password, function (err, result) {
       if (result === true) {
@@ -47,7 +35,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   console.log("!!REGISTER!!", req.body)
-
   await req.context.models.User.createUnique(req.body)
 })
 
